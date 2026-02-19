@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://bk86olllngx0w"]
+
+[ext_resource type="Script" uid="uid://c3o8ell7qcc60" path="res://scenes/EndOfDay.gd" id="1_njycw"]
+
+[node name="EndOfDay" type="CanvasLayer" unique_id=1823366765]
+script = ExtResource("1_njycw")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=727075153]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.7208041, 0.7240601, 0.7091997, 1)
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=591889980]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -40.0
+offset_right = 60.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1923646541]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1851672303]
+layout_mode = 2
+text = "End Of Workday"
+horizontal_alignment = 1
+
+[node name="Space" type="Label" parent="Panel/VBoxContainer" unique_id=2085805609]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="Panel/VBoxContainer" unique_id=400785809]
+layout_mode = 2
+text = "Continue?"
