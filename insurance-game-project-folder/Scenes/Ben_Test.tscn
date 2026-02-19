@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://cc4gol3uf8vxo"]
+
+[node name="Node2D" type="Node2D" unique_id=1846460383]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=277713256]
+
+[node name="Button" type="Button" parent="." unique_id=598588329]
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Control" type="Control" parent="." unique_id=1237242379]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 4
+
+[node name="Panel" type="Panel" parent="Control" unique_id=879483233]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
