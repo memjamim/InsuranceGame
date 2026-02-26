@@ -1,10 +1,20 @@
 [gd_scene format=3 uid="uid://bnlg3jrc6cefc"]
 
-[ext_resource type="Script" uid="uid://bw4bn1hlkkk1p" path="res://scenes/Room.gd" id="1_llheb"]
-[ext_resource type="PackedScene" uid="uid://gabaamkc0ohi" path="res://scenes/CombatUI.tscn" id="2_liqgt"]
+[ext_resource type="Script" uid="uid://bw4bn1hlkkk1p" path="res://Scenes/Room.gd" id="1_llheb"]
+[ext_resource type="PackedScene" uid="uid://gabaamkc0ohi" path="res://Scenes/CombatUI.tscn" id="2_liqgt"]
+[ext_resource type="Texture2D" uid="uid://bc5yfojbq21sp" path="res://assets/backgrounds/4-mirror.png" id="2_uj218"]
 
 [node name="Room" type="Node" unique_id=751113047]
 script = ExtResource("1_llheb")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1524154822]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_uj218")
+expand_mode = 2
 
 [node name="Enemies" type="GridContainer" parent="." unique_id=1268766332]
 anchors_preset = 8
@@ -14,8 +24,8 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -20.0
 offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_right = 60.0
+offset_bottom = 60.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4

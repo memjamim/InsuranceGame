@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://gabaamkc0ohi"]
 
-[ext_resource type="Script" uid="uid://cjo7y36apt4k3" path="res://scenes/CombatUI.gd" id="1_k0kdm"]
+[ext_resource type="Script" uid="uid://cjo7y36apt4k3" path="res://Scenes/CombatUI.gd" id="1_k0kdm"]
 
 [node name="CombatUI" type="Control" unique_id=252245466]
 layout_mode = 3
@@ -26,20 +26,36 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="AttackButton" type="Button" parent="HBoxContainer" unique_id=809881167]
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Attack"
 
 [node name="BlockButton" type="Button" parent="HBoxContainer" unique_id=410772650]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Block"
 
 [node name="DodgeButton" type="Button" parent="HBoxContainer" unique_id=1375743553]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Dodge"
 
 [node name="LogLabel" type="Label" parent="." unique_id=2020964965]
-layout_mode = 0
-offset_left = 449.0
-offset_top = 5.0
-offset_right = 1133.0
-offset_bottom = 102.0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -198.0
+offset_right = 734.0
+offset_bottom = -60.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.56078434)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 24
