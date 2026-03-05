@@ -16,3 +16,6 @@ func _load_day1_room():
 	room_data.room_name = "Waiting Room"
 	room_data.reward_money = 2
 	room.init_room(room_data)
+
+
+# Todo: Make # of enemies scale with room # for day / total, make enemies selectable, make timing system work properly / give it a hotkey, do rewards after each fight.
