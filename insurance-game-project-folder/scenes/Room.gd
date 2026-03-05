@@ -1,6 +1,25 @@
 extends Node
 class_name Room
 
+
+@export var enemy_sprite_pool: Array[Texture2D] = []
+@export var enemy_name_pool: Array[String] = [
+	"Claim Gnawer",
+	"Form Wraith",
+	"Copay Goblin",
+	"Denial Beast",
+	"Appeals Slime",
+	"Premium Leech",
+	"Deductible Rat",
+	"Coverage Phantom",
+	"Billing Horror",
+	"Waiting Room Mite"
+]
+
+@export var min_enemies_per_encounter: int = 1
+@export var max_enemies_per_encounter: int = 4
+
+
 @export var room_data: RoomData
 @export var enemy_scene: PackedScene = preload("res://scenes/Enemy.tscn")
 
@@ -52,28 +71,27 @@ func _init_after_data():
 	_refresh_ui("Encounter begins.")
 
 func _spawn_enemies():
-	# Clear existing encounter if any
 	for c in enemies_holder.get_children():
 		c.queue_free()
 	enemies.clear()
 
 	if room_data == null:
-		push_warning("Room has no RoomData; creating default with 1 enemy.")
 		room_data = RoomData.new()
-		var e := EnemyData.new()
-		e.enemy_name = "Paperwork Wraith"
-		room_data.enemies = [e]
+		room_data.room_name = "Waiting Room"
+		room_data.reward_money = 2
 
-	for enemy_data in room_data.enemies:
+	var enemy_defs := _generate_enemy_list_for_encounter()
+
+	for enemy_data in enemy_defs:
 		var inst: Enemy = enemy_scene.instantiate()
 		inst.data = enemy_data
 		inst.died.connect(_on_enemy_died)
-		enemies_holder.add_child(inst) # GridContainer
+		enemies_holder.add_child(inst)
 		enemies.append(inst)
 
 	target_index = 0
 
-func _on_player_move(player_move: int):
+func _on_player_move(player_move: int, timing_quality: float):
 	# If the day is over, ignore inputs
 	if GameState.in_end_day:
 		_set_combat_enabled(false)
@@ -92,7 +110,8 @@ func _on_player_move(player_move: int):
 	var outcome := CombatResolver.resolve(
 		player_move, enemy_move,
 		GameState.player_power, GameState.player_defense,
-		target.data.power, target.data.defense
+		target.data.power, target.data.defense,
+		timing_quality
 	)
 
 	if outcome["player_damage_taken"] > 0:
@@ -204,3 +223,52 @@ func _move_name(m: int) -> String:
 		CombatResolver.Move.BLOCK: return "BLOCK"
 		CombatResolver.Move.DODGE: return "DODGE"
 		_: return "???"
+
+func _generate_random_enemy(day_num: int) -> EnemyData:
+	var e := EnemyData.new()
+
+	# Random name
+	if not enemy_name_pool.is_empty():
+		e.enemy_name = enemy_name_pool[randi() % enemy_name_pool.size()]
+	else:
+		e.enemy_name = "Disease %d" % randi_range(1, 999)
+
+	# Random sprite
+	if not enemy_sprite_pool.is_empty():
+		e.sprite_texture = enemy_sprite_pool[randi() % enemy_sprite_pool.size()]
+
+	# Stat budget scales a bit by day
+	var budget := 8 + day_num * 2
+
+	# Start from minimums
+	e.max_hp = 6
+	e.power = 1
+	e.defense = 0
+
+	# Spend points randomly
+	while budget > 0:
+		var pick := randi() % 3
+		match pick:
+			0:
+				e.max_hp += 2
+			1:
+				e.power += 1
+			2:
+				e.defense += 1
+		budget -= 1
+
+	# Behavior weights can also vary
+	e.weight_attack = randi_range(25, 60)
+	e.weight_block = randi_range(10, 40)
+	e.weight_dodge = randi_range(10, 40)
+
+	return e
+
+func _generate_enemy_list_for_encounter() -> Array[EnemyData]:
+	var list: Array[EnemyData] = []
+	var count := randi_range(min_enemies_per_encounter, max_enemies_per_encounter)
+
+	for i in range(count):
+		list.append(_generate_random_enemy(GameState.day))
+
+	return list

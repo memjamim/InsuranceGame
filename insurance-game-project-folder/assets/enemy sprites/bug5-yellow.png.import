@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bs0k5dy4sefrb"
-path="res://.godot/imported/crosshair.png-7a5ee98d03b748045923e3a0fa977b20.ctex"
+uid="uid://dxnpg6accum8b"
+path="res://.godot/imported/bug5-yellow.png-44ce60d324b626cbdd161efc5819c1eb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/crosshair.png"
-dest_files=["res://.godot/imported/crosshair.png-7a5ee98d03b748045923e3a0fa977b20.ctex"]
+source_file="res://assets/enemy sprites/bug5-yellow.png"
+dest_files=["res://.godot/imported/bug5-yellow.png-44ce60d324b626cbdd161efc5819c1eb.ctex"]
 
 [params]
 
@@ -36,5 +36,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=64
+process/size_limit=0
 detect_3d/compress_to=1
