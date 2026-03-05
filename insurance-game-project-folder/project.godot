@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="InsuranceGameProjectFolder"
-run/main_scene="uid://b0cmu4y8o7mrx"
+run/main_scene="uid://bmhhmjdp4jxcg"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 GameState="*uid://rsffel8jcp38"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
 
 [physics]
 

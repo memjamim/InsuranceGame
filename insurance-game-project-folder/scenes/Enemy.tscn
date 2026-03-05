@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://n1bu7pnat07t"]
 
-[ext_resource type="Script" uid="uid://6daj6k6jjg8f" path="res://scenes/Enemy.gd" id="1_3gvst"]
-[ext_resource type="Texture2D" uid="uid://bdurgehk0bnno" path="res://icon.svg" id="2_55jtl"]
+[ext_resource type="Script" uid="uid://6daj6k6jjg8f" path="res://Scenes/Enemy.gd" id="1_3gvst"]
+[ext_resource type="Texture2D" uid="uid://cdmyydy6qnbg3" path="res://assets/bug9-cyan.png" id="2_wovta"]
 
 [node name="Enemy" type="Control" unique_id=1557831338]
 custom_minimum_size = Vector2(200, 200)
@@ -26,21 +26,28 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -64.0
-offset_top = -93.0
-offset_right = 64.0
-offset_bottom = 93.0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 50.0
+offset_bottom = 78.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="NameLabel" type="Label" parent="VBoxContainer" unique_id=756992965]
 layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.3764706)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 5
 text = "Enemy Name :D"
 horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer" unique_id=116721220]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
-texture = ExtResource("2_55jtl")
+texture = ExtResource("2_wovta")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="HPBar" type="ProgressBar" parent="VBoxContainer" unique_id=998783223]
 layout_mode = 2
