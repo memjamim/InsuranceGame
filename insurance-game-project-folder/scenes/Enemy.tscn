@@ -1,7 +1,12 @@
 [gd_scene format=3 uid="uid://n1bu7pnat07t"]
 
-[ext_resource type="Script" uid="uid://6daj6k6jjg8f" path="res://Scenes/Enemy.gd" id="1_3gvst"]
-[ext_resource type="Texture2D" uid="uid://cdmyydy6qnbg3" path="res://assets/bug9-cyan.png" id="2_wovta"]
+[ext_resource type="Script" uid="uid://6daj6k6jjg8f" path="res://scenes/Enemy.gd" id="1_3gvst"]
+[ext_resource type="Script" uid="uid://h7hq3tvc5b0i" path="res://data/EnemyData.gd" id="2_mpr68"]
+[ext_resource type="Texture2D" uid="uid://cdmyydy6qnbg3" path="res://assets/enemy sprites/bug9-cyan.png" id="2_wovta"]
+
+[sub_resource type="Resource" id="Resource_ft8do"]
+script = ExtResource("2_mpr68")
+metadata/_custom_type_script = "uid://h7hq3tvc5b0i"
 
 [node name="Enemy" type="Control" unique_id=1557831338]
 custom_minimum_size = Vector2(200, 200)
@@ -18,6 +23,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3gvst")
+data = SubResource("Resource_ft8do")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1417880308]
 layout_mode = 1
@@ -42,7 +48,7 @@ theme_override_constants/shadow_outline_size = 5
 text = "Enemy Name :D"
 horizontal_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer" unique_id=116721220]
+[node name="Icon" type="TextureRect" parent="VBoxContainer" unique_id=116721220]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 texture = ExtResource("2_wovta")
