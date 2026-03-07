@@ -4,12 +4,14 @@ signal day_started(day: int)
 signal day_ended(day: int)
 signal turns_changed(turns_left: int)
 signal player_changed()
+signal player_died()
 
 const TURNS_PER_DAY := 12
 
 var day: int = 1
 var turns_left: int = TURNS_PER_DAY
 var in_end_day: bool = false
+var has_completed_first_loop: bool = false
 
 var money: int = 0
 var documents: Dictionary = {}
@@ -48,6 +50,7 @@ func spend_turn():
 func continue_to_next_day():
 	if not in_end_day:
 		return
+	has_completed_first_loop = true
 	in_end_day = false
 	day += 1
 	turns_left = TURNS_PER_DAY
@@ -57,3 +60,5 @@ func continue_to_next_day():
 func damage_player(amount: int):
 	player_hp = max(0, player_hp - amount)
 	player_changed.emit()
+	if player_hp == 0:
+		player_died.emit()

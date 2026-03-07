@@ -64,6 +64,7 @@ func _init_after_data():
 		end_of_day_ui = end_of_day_scene.instantiate()
 		add_child(end_of_day_ui)
 		end_of_day_ui.continued.connect(_on_end_day_continue)
+		end_of_day_ui.alt_medicine_chosen.connect(_on_alt_medicine_chosen)
 
 	combat_ui.move_chosen.connect(_on_player_move)
 
@@ -272,3 +273,6 @@ func _generate_enemy_list_for_encounter() -> Array[EnemyData]:
 		list.append(_generate_random_enemy(GameState.day))
 
 	return list
+
+func _on_alt_medicine_chosen() -> void:
+	get_tree().change_scene_to_file("res://scenes/endings/AltMedEnding.tscn")

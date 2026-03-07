@@ -34,15 +34,15 @@ func _ready() -> void:
 	#panel_label.text = "[center]It’s been a week since I got sick.\n\nMy doctor says it’s a rare disease that needs to be operated on.\nUnfortunately my insurance company says I have to re-register due to a change in policy. [/center]"
 	#continue_hint.text = "[ Click or press Enter to begin ]"
 
-func _input(event: InputEvent) -> void:
-	var clicked: bool = event is InputEventMouseButton \
-		and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
-		and event.pressed
-	if event.is_action_pressed("ui_accept") or clicked:
-		if _current < panels.size():
-			_advance()
-		else:
-			get_tree().change_scene_to_file(next_scene_path)
+#func _input(event: InputEvent) -> void:
+	#var clicked: bool = event is InputEventMouseButton \
+		#and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
+		#and event.pressed
+	#if event.is_action_pressed("ui_accept") or clicked:
+		#if _current < panels.size():
+			#_advance()
+		#else:
+			#get_tree().change_scene_to_file(next_scene_path)
 
 func _unhandled_input(event: InputEvent) -> void:
 	var clicked: bool = event is InputEventMouseButton \
