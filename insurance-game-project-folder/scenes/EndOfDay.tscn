@@ -40,3 +40,7 @@ layout_mode = 2
 [node name="ContinueButton" type="Button" parent="Panel/VBoxContainer" unique_id=400785809]
 layout_mode = 2
 text = "Continue?"
+
+[node name="AltMedButton" type="Button" parent="Panel/VBoxContainer" unique_id=73120679]
+layout_mode = 2
+text = "Have you considered Alternative Medicine?"
