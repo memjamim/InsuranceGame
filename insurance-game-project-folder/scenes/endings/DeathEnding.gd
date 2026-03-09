@@ -5,9 +5,8 @@ class_name DeathEnding
 @onready var continue_hint: Label       = $MarginContainer/VBoxContainer/ContinueHint
 
 var panels: Array[String] = [
-	"[center][Bryan Filler Text][/center]",
-	"[center][BFT][/center]",
-	"[center][BFT0][/center]",
+	"[center]As my sickness gets worse, I no longer have the energy to get out of bed.\nMy insurance remains unrenewed. I can’t pay for treatment. I fade.\n\n[/center]",
+	"[center]Despite the numerous documents you've collected, you can't get any treatment.\nYou succumed to your disease.\n\n[/center]"
 ]
 
 var _current: int = 0
