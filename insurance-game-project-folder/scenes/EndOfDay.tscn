@@ -44,3 +44,6 @@ text = "Continue?"
 [node name="AltMedButton" type="Button" parent="Panel/VBoxContainer" unique_id=73120679]
 layout_mode = 2
 text = "Have you considered Alternative Medicine?"
+
+[node name="StatusLabel" type="Label" parent="Panel/VBoxContainer" unique_id=489709337]
+layout_mode = 2

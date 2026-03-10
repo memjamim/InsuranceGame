@@ -17,7 +17,9 @@ var timing_active: bool = false
 var selected_move: int = CombatResolver.Move.ATTACK
 var marker_t: float = 0.0
 var marker_dir: float = 1.0
-var timing_speed: float = 1.8
+var base_timing_speed: float = 1.8
+
+var base_sweet_spot_width: float = 80.0
 
 func _ready():
 	attack_btn.pressed.connect(func(): _begin_timing(CombatResolver.Move.ATTACK))
@@ -32,7 +34,9 @@ func _process(delta: float):
 	if not timing_active:
 		return
 
-	marker_t += marker_dir * timing_speed * delta
+	var actual_speed := base_timing_speed * GameState.get_timing_speed_multiplier()
+
+	marker_t += marker_dir * actual_speed * delta
 	if marker_t >= 1.0:
 		marker_t = 1.0
 		marker_dir = -1.0
@@ -52,6 +56,8 @@ func _begin_timing(move: int):
 	marker_t = 0.0
 	marker_dir = 1.0
 
+	_configure_sweet_spot()
+
 	attack_btn.disabled = true
 	block_btn.disabled = true
 	dodge_btn.disabled = true
@@ -64,7 +70,6 @@ func _commit_timing():
 		return
 
 	timing_active = false
-
 	var quality := _calculate_timing_quality()
 
 	timing_bar.hide()
@@ -76,14 +81,35 @@ func _commit_timing():
 
 	move_chosen.emit(selected_move, quality)
 
-func _calculate_timing_quality() -> float:
-	var marker_center: float = marker.global_position.x + marker.size.x * 0.5
-	var sweet_center: float = sweet_spot.global_position.x + sweet_spot.size.x * 0.5
-	var max_dist: float = maxf(1.0, timing_bar.size.x * 0.5)
+func _configure_sweet_spot():
+	var width_mult := GameState.get_timing_sweet_spot_multiplier()
+	var new_width := base_sweet_spot_width * width_mult
+	sweet_spot.size.x = new_width
+	sweet_spot.position.x = (timing_bar.size.x - new_width) * 0.5
 
-	var dist: float = absf(marker_center - sweet_center)
-	var q: float = 1.0 - (dist / max_dist)
-	return clampf(q, 0.0, 1.0)
+func _calculate_timing_quality() -> float:
+	var marker_center: float = marker.position.x + marker.size.x * 0.5
+	var sweet_left: float = sweet_spot.position.x
+	var sweet_right: float = sweet_spot.position.x + sweet_spot.size.x
+
+	if marker_center >= sweet_left and marker_center <= sweet_right:
+		return 1.0
+
+	var dist_to_zone := 0.0
+	if marker_center < sweet_left:
+		dist_to_zone = sweet_left - marker_center
+	else:
+		dist_to_zone = marker_center - sweet_right
+
+	var falloff_range := maxf(1.0, timing_bar.size.x * 0.35)
+	return clampf(1.0 - (dist_to_zone / falloff_range), 0.0, 1.0)
+
+func _unhandled_input(event: InputEvent):
+	if not timing_active:
+		return
+
+	if event.is_action_pressed("ui_accept"):
+		_commit_timing()
 
 func set_log(text: String):
 	log_label.text = text

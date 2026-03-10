@@ -75,13 +75,27 @@ offset_bottom = -58.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Marker" type="ColorRect" parent="TimingBar" unique_id=905392711]
+[node name="ColorRect2" type="ColorRect" parent="TimingBar" unique_id=705229206]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3647059, 1, 1, 1)
+
+[node name="ColorRect" type="ColorRect" parent="TimingBar" unique_id=897706438]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0.08855983, 0.08855996, 0.08855987, 0.49019608)
 
 [node name="SweetSpot" type="ColorRect" parent="TimingBar" unique_id=336497850]
 layout_mode = 1
@@ -96,7 +110,13 @@ offset_right = 20.0
 offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 0, 1, 1)
+color = Color(0.87246233, 0.40594214, 0.8811245, 1)
+
+[node name="Marker" type="ColorRect" parent="TimingBar" unique_id=905392711]
+layout_mode = 1
+offset_right = 20.0
+offset_bottom = 50.0
+color = Color(1, 1, 0.27058825, 1)
 
 [node name="TimingButton" type="Button" parent="." unique_id=556707982]
 layout_mode = 1

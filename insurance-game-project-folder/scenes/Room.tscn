@@ -1,11 +1,20 @@
 [gd_scene format=3 uid="uid://bnlg3jrc6cefc"]
 
-[ext_resource type="Script" uid="uid://bw4bn1hlkkk1p" path="res://Scenes/Room.gd" id="1_llheb"]
-[ext_resource type="PackedScene" uid="uid://gabaamkc0ohi" path="res://Scenes/CombatUI.tscn" id="2_liqgt"]
+[ext_resource type="Script" uid="uid://bw4bn1hlkkk1p" path="res://scenes/Room.gd" id="1_llheb"]
+[ext_resource type="PackedScene" uid="uid://gabaamkc0ohi" path="res://scenes/CombatUI.tscn" id="2_liqgt"]
+[ext_resource type="Texture2D" uid="uid://onft122fc5ri" path="res://assets/enemy sprites/bug12-yellow.png" id="2_tnfip"]
 [ext_resource type="Texture2D" uid="uid://bc5yfojbq21sp" path="res://assets/backgrounds/4-mirror.png" id="2_uj218"]
+[ext_resource type="Script" uid="uid://h7hq3tvc5b0i" path="res://data/EnemyData.gd" id="3_ut7mc"]
+[ext_resource type="Script" uid="uid://7r7m30y2wvbb" path="res://data/RoomData.gd" id="4_8h30a"]
+
+[sub_resource type="Resource" id="Resource_ey61u"]
+script = ExtResource("4_8h30a")
+metadata/_custom_type_script = "uid://7r7m30y2wvbb"
 
 [node name="Room" type="Node" unique_id=751113047]
 script = ExtResource("1_llheb")
+enemy_sprite_pool = Array[Texture2D]([ExtResource("2_tnfip")])
+room_data = SubResource("Resource_ey61u")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1524154822]
 anchors_preset = 15
@@ -15,6 +24,8 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_uj218")
 expand_mode = 2
+
+[node name="CombatUI" parent="." unique_id=252245466 instance=ExtResource("2_liqgt")]
 
 [node name="Enemies" type="GridContainer" parent="." unique_id=1268766332]
 anchors_preset = 8
@@ -33,5 +44,3 @@ size_flags_vertical = 4
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 12
 columns = 2
-
-[node name="CombatUI" parent="." unique_id=252245466 instance=ExtResource("2_liqgt")]
