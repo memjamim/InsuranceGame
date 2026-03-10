@@ -48,10 +48,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 50.0
-offset_top = -198.0
-offset_right = 734.0
-offset_bottom = -60.0
+offset_left = 52.0
+offset_top = -268.0
+offset_right = 736.0
+offset_bottom = -130.0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.56078434)
@@ -111,6 +111,21 @@ offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.87246233, 0.40594214, 0.8811245, 1)
+
+[node name="PerfectSpot" type="ColorRect" parent="TimingBar/SweetSpot" unique_id=629029705]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -25.0
+offset_right = 5.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.44705883, 0, 0.5254902, 1)
 
 [node name="Marker" type="ColorRect" parent="TimingBar" unique_id=905392711]
 layout_mode = 1

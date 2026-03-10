@@ -5,18 +5,19 @@ signal day_ended(day: int)
 signal turns_changed(turns_left: int)
 signal player_changed()
 signal player_died()
-signal status_effect_changed(status_data: Dictionary)
+signal diseases_changed()
+signal pending_disease_changed(disease_data: Dictionary)
 
-const TURNS_PER_DAY := 12
+const TURNS_PER_DAY: int = 12
 
-enum StatusEffect {
-	NONE,
-	BATTLE_FOCUS,
-	FOGGY_VISION,
-	ADRENALINE,
-	PANIC,
-	RED_TAPE_SURGE,
-	FLICKERING_LIGHTS
+enum Disease {
+	RABIES,
+	LEPROSY,
+	TUBERCULOSIS,
+	MIGRAINE,
+	ANEMIA,
+	HYPERTHYROIDISM,
+	PNEUMONIA
 }
 
 var day: int = 1
@@ -32,14 +33,17 @@ var player_hp: int = 30
 var player_power: int = 8
 var player_defense: int = 2
 
-var current_status: int = StatusEffect.NONE
-var pending_status: int = StatusEffect.NONE
+var active_diseases: Array[int] = []
+var pending_disease: int = -1
 
-func new_game():
+var leprosy_disabled_move: int = -1
+
+func new_game() -> void:
 	day = 1
 	turns_left = TURNS_PER_DAY
 	in_end_day = false
 	has_completed_first_loop = false
+
 	money = 0
 	documents = {}
 
@@ -47,135 +51,235 @@ func new_game():
 	player_hp = player_max_hp
 	player_power = 8
 	player_defense = 2
-	current_status = StatusEffect.NONE
+
+	active_diseases.clear()
+	pending_disease = -1
+	leprosy_disabled_move = -1
 
 	day_started.emit(day)
 	turns_changed.emit(turns_left)
 	player_changed.emit()
-	status_effect_changed.emit(get_status_data())
+	diseases_changed.emit()
+	pending_disease_changed.emit(get_pending_disease_data())
 
-func spend_turn():
+func spend_turn() -> void:
 	if in_end_day:
 		return
 
 	turns_left -= 1
+
+	if has_disease(Disease.TUBERCULOSIS):
+		damage_player(1)
+
 	turns_changed.emit(turns_left)
 
 	if turns_left <= 0:
 		in_end_day = true
-		roll_pending_status_effect()
+		roll_pending_disease()
 		day_ended.emit(day)
 
-func continue_to_next_day():
+func continue_to_next_day() -> void:
 	if not in_end_day:
 		return
 
-	current_status = pending_status
-	pending_status = StatusEffect.NONE
+	if pending_disease != -1:
+		active_diseases.append(pending_disease)
+
 	has_completed_first_loop = true
 	in_end_day = false
 	day += 1
 	turns_left = TURNS_PER_DAY
 
+	_apply_disease_state()
+	_heal_for_new_day()
+
+	pending_disease = -1
+
 	day_started.emit(day)
 	turns_changed.emit(turns_left)
-	status_effect_changed.emit(get_status_data())
-
-func damage_player(amount: int):
-	player_hp = max(0, hp_after_modifiers(amount))
 	player_changed.emit()
+	diseases_changed.emit()
+	pending_disease_changed.emit(get_pending_disease_data())
+
+func damage_player(amount: int) -> void:
+	player_hp = max(0, player_hp - max(0, amount))
+	player_changed.emit()
+
 	if player_hp == 0:
 		player_died.emit()
 
-func hp_after_modifiers(incoming_damage: int) -> int:
-	return player_hp - max(0, incoming_damage)
+func heal_player(amount: int) -> void:
+	player_hp = min(player_max_hp, player_hp + max(0, amount))
+	player_changed.emit()
 
-func roll_pending_status_effect():
+func roll_pending_disease() -> void:
 	var options: Array[int] = [
-		StatusEffect.BATTLE_FOCUS,
-		StatusEffect.FOGGY_VISION,
-		StatusEffect.ADRENALINE,
-		StatusEffect.PANIC,
-		StatusEffect.RED_TAPE_SURGE,
-		StatusEffect.FLICKERING_LIGHTS
+		Disease.RABIES,
+		Disease.LEPROSY,
+		Disease.TUBERCULOSIS,
+		Disease.MIGRAINE,
+		Disease.ANEMIA,
+		Disease.HYPERTHYROIDISM,
+		Disease.PNEUMONIA
 	]
-	pending_status = options[randi() % options.size()]
 
-func get_pending_status_data() -> Dictionary:
-	var old := current_status
-	current_status = pending_status
-	var data := get_status_data()
-	current_status = old
-	return data
+	pending_disease = options[randi() % options.size()]
 
-func get_status_data() -> Dictionary:
-	match current_status:
-		StatusEffect.BATTLE_FOCUS:
+	if pending_disease == Disease.LEPROSY:
+		leprosy_disabled_move = randi() % 3
+
+	pending_disease_changed.emit(get_pending_disease_data())
+
+func has_disease(disease: int) -> bool:
+	return active_diseases.has(disease)
+
+func get_active_disease_names() -> Array[String]:
+	var names: Array[String] = []
+	for disease in active_diseases:
+		names.append(str(_get_disease_data_for(disease).get("name", "Unknown")))
+	return names
+
+func get_active_disease_summary() -> String:
+	if active_diseases.is_empty():
+		return "None"
+	return ", ".join(get_active_disease_names())
+
+func get_pending_disease_data() -> Dictionary:
+	if pending_disease == -1:
+		return {
+			"id": -1,
+			"name": "None",
+			"description": ""
+		}
+	return _get_disease_data_for(pending_disease)
+
+func _get_disease_data_for(disease: int) -> Dictionary:
+	match disease:
+		Disease.RABIES:
 			return {
-				"id": current_status,
-				"name": "Battle Focus",
-				"description": "+2 player power."
+				"id": disease,
+				"name": "Rabies",
+				"description": "+3 power. End-of-day healing reduced."
 			}
-		StatusEffect.FOGGY_VISION:
+		Disease.LEPROSY:
 			return {
-				"id": current_status,
-				"name": "Foggy Vision",
-				"description": "Timing sweet spot is smaller."
+				"id": disease,
+				"name": "Leprosy",
+				"description": "One combat option is unusable.",
+				"disabled_move": leprosy_disabled_move
 			}
-		StatusEffect.ADRENALINE:
+		Disease.TUBERCULOSIS:
 			return {
-				"id": current_status,
-				"name": "Adrenaline",
-				"description": "Timing marker moves faster."
+				"id": disease,
+				"name": "Tuberculosis",
+				"description": "Lose 1 HP each turn. Timing bar moves slower."
 			}
-		StatusEffect.PANIC:
+		Disease.MIGRAINE:
 			return {
-				"id": current_status,
-				"name": "Panic",
-				"description": "-1 player defense."
+				"id": disease,
+				"name": "Migraine",
+				"description": "Smaller timing window. Perfect hits are stronger."
 			}
-		StatusEffect.RED_TAPE_SURGE:
+		Disease.ANEMIA:
 			return {
-				"id": current_status,
-				"name": "Red Tape Surge",
-				"description": "Enemies gain +1 defense."
+				"id": disease,
+				"name": "Anemia",
+				"description": "-2 power. Larger timing window."
 			}
-		StatusEffect.FLICKERING_LIGHTS:
+		Disease.HYPERTHYROIDISM:
 			return {
-				"id": current_status,
-				"name": "Flickering Lights",
-				"description": "Visual distortion/flicker."
+				"id": disease,
+				"name": "Hyperthyroidism",
+				"description": "Faster timing bar. Perfect hits are stronger."
+			}
+		Disease.PNEUMONIA:
+			return {
+				"id": disease,
+				"name": "Pneumonia",
+				"description": "-1 defense. Reduced healing."
 			}
 		_:
 			return {
-				"id": StatusEffect.NONE,
-				"name": "None",
-				"description": "No active effect."
+				"id": -1,
+				"name": "Unknown",
+				"description": ""
 			}
 
+func _apply_disease_state() -> void:
+	if has_disease(Disease.LEPROSY):
+		if leprosy_disabled_move < 0:
+			leprosy_disabled_move = randi() % 3
+	else:
+		leprosy_disabled_move = -1
+
+func _heal_for_new_day() -> void:
+	var base_heal: int = max(5, int(player_max_hp * 0.33))
+	var heal_mult: float = get_end_of_day_heal_multiplier()
+	var final_heal: int = max(1, int(round(base_heal * heal_mult)))
+	heal_player(final_heal)
+
 func get_modified_player_power() -> int:
-	var bonus := 0
-	if current_status == StatusEffect.BATTLE_FOCUS:
-		bonus += 2
-	return player_power + bonus
+	var bonus: int = 0
+
+	if has_disease(Disease.RABIES):
+		bonus += 3
+	if has_disease(Disease.ANEMIA):
+		bonus -= 2
+
+	return max(1, player_power + bonus)
 
 func get_modified_player_defense() -> int:
-	var bonus := 0
-	if current_status == StatusEffect.PANIC:
+	var bonus: int = 0
+
+	if has_disease(Disease.PNEUMONIA):
 		bonus -= 1
+
 	return max(0, player_defense + bonus)
 
 func get_enemy_defense_bonus() -> int:
-	if current_status == StatusEffect.RED_TAPE_SURGE:
-		return 1
 	return 0
 
 func get_timing_speed_multiplier() -> float:
-	if current_status == StatusEffect.ADRENALINE:
-		return 1.35
-	return 1.0
+	var mult: float = 1.0
+
+	if has_disease(Disease.TUBERCULOSIS):
+		mult *= 0.8
+	if has_disease(Disease.HYPERTHYROIDISM):
+		mult *= 1.4
+
+	return mult
 
 func get_timing_sweet_spot_multiplier() -> float:
-	if current_status == StatusEffect.FOGGY_VISION:
-		return 0.6
-	return 1.0
+	var mult: float = 1.0
+
+	if has_disease(Disease.MIGRAINE):
+		mult *= 0.65
+	if has_disease(Disease.ANEMIA):
+		mult *= 1.35
+
+	return mult
+
+func get_perfect_damage_multiplier() -> float:
+	var mult: float = 2.0
+
+	if has_disease(Disease.MIGRAINE):
+		mult += 0.25
+	if has_disease(Disease.HYPERTHYROIDISM):
+		mult += 0.25
+
+	return mult
+
+func get_end_of_day_heal_multiplier() -> float:
+	var mult: float = 1.0
+
+	if has_disease(Disease.RABIES):
+		mult *= 0.5
+	if has_disease(Disease.PNEUMONIA):
+		mult *= 0.6
+
+	return mult
+
+func get_disabled_move() -> int:
+	if has_disease(Disease.LEPROSY):
+		return leprosy_disabled_move
+	return -1
